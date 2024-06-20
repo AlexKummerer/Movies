@@ -1,5 +1,5 @@
 import movie_storage
-
+from movie_stats import stats
 
 def list_movies():
     movies = movie_storage.list_movies()
@@ -47,6 +47,7 @@ menu_options = {
     "2": ("Add movie", add_movie),
     "3": ("Delete movie", delete_movie),
     "4": ("Update movie", update_movie),
+    "5": ("Stats", stats)
 }
 
 
