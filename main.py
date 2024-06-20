@@ -1,5 +1,7 @@
 import movie_storage
-from movie_stats import stats, print_random_movie
+from movie_stats import stats
+from movie_search import print_random_movie, search_movie, sort_by_rating
+
 
 def list_movies():
     movies = movie_storage.list_movies()
@@ -41,6 +43,11 @@ def update_movie():
             print("Invalid input. Rating should be a float.")
 
 
+def search():
+    search_title = input("Enter part of movie name: ")
+    search_movie(search_title)
+
+
 menu_options = {
     "0": ("Exit", None),
     "1": ("List movies", list_movies),
@@ -48,7 +55,9 @@ menu_options = {
     "3": ("Delete movie", delete_movie),
     "4": ("Update movie", update_movie),
     "5": ("Stats", stats),
-    "6": ("Random movie", print_random_movie)
+    "6": ("Random movie", print_random_movie),
+    "7": ("Search movie", search),
+    "8": ("Movies sorted by rating", sort_by_rating),
 }
 
 
@@ -83,4 +92,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
