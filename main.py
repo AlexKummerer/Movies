@@ -1,6 +1,7 @@
 import movie_storage
-from movie_stats import stats
-from movie_search import print_random_movie, search_movie, sort_by_rating
+from movie_stats import stats, print_random_movie, sort_by_rating, sort_by_year
+from movie_search import search_movie
+from movie_filter import filter_movies_by_rating_and_year
 
 
 def list_movies() -> None:
@@ -50,6 +51,16 @@ def search() -> None:
     search_title = input("Enter part of movie name: ")
     search_movie(search_title)
 
+def filter_movie() -> None :
+    """Ask user-specification on rating and year range and filter"""
+    try:
+        min_rating = float(input("Enter the minimum rating to filter by: "))
+        start_year = int(input("Enter the start year to filter by: "))
+        end_year = int(input("Enter the end year to filter by: "))
+        filter_movies_by_rating_and_year(min_rating, start_year, end_year)
+    except ValueError:
+        print("Pls enter a valid float for rating and an int for year range")
+    
 
 menu_options = {
     "0": ("Exit", None),
@@ -61,6 +72,8 @@ menu_options = {
     "6": ("Random movie", print_random_movie),
     "7": ("Search movie", search),
     "8": ("Movies sorted by rating", sort_by_rating),
+    "9": ("Movies sorted by year", sort_by_year),
+    "10":("Filter movies", filter_movie)
 }
 
 
