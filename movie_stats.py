@@ -1,5 +1,6 @@
-from movie_storage import list_movies
 import statistics
+from movie_storage import list_movies
+
 
 def calculate_average_rating(movies):
     """Calculate the average rating of the movies"""
@@ -68,5 +69,3 @@ def stats():
     worst_movies = find_worst_movies(movies)
 
     print_stats(average_rating, median_rating, best_movies, worst_movies, len(movies))
-
-

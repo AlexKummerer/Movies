@@ -3,33 +3,35 @@ from movie_stats import stats
 from movie_search import print_random_movie, search_movie, sort_by_rating
 
 
-def list_movies():
+def list_movies() -> None:
+    """List all movies in the database."""
     movies = movie_storage.list_movies()
     print(f"\n{len(movies)} movies in total\n")
     for movie in movies:
         print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
 
 
-def add_movie():
-
+def add_movie() -> None:
+    """Add a new movie to the database."""
     title = input("Enter new movie name: ")
     try:
         year = int(input("Enter new movie year: "))
         rating = float(input("Enter new movie rating: "))
+        movie_storage.add_movie(title, year, rating)
     except ValueError:
         print(
             "\nInvalid input. Year should be an integer and rating should be a float."
         )
 
-    movie_storage.add_movie(title, year, rating)
 
-
-def delete_movie():
+def delete_movie() -> None:
+    """Delete a movie from the database by title."""
     title = input("\nEnter movie name to delete: ")
     movie_storage.delete_movie(title)
 
 
-def update_movie():
+def update_movie() -> None:
+    """Update the rating of an existing movie."""
     movie_name = input("\nEnter movie name: ")
     movie = movie_storage.get_movie_by_title(movie_name)
 
@@ -43,7 +45,8 @@ def update_movie():
             print("Invalid input. Rating should be a float.")
 
 
-def search():
+def search() -> None:
+    """Search for movies by part of their title."""
     search_title = input("Enter part of movie name: ")
     search_movie(search_title)
 
@@ -61,7 +64,7 @@ menu_options = {
 }
 
 
-def display_menu():
+def display_menu() -> None:
     """Display the application menu"""
     print("\n******* My Movies Database *******")
     print("Menu:")
@@ -69,7 +72,7 @@ def display_menu():
         print(f"{key}. {descr}")
 
 
-def main():
+def main() -> None:
     """Main function to run the application"""
     while True:
         display_menu()
@@ -79,9 +82,8 @@ def main():
             if choice == "0":
                 print("\nExiting the application, Goodbye!")
                 break
-            else:
-                print(f"\nExecuting: {descr}")
-                function()
+            print(f"\nExecuting: {descr}")
+            function()
         else:
             print(
                 f"\nInvalid choice. Please enter a number between 0 and {len(menu_options) -1 }."
