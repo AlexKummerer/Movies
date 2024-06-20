@@ -1,6 +1,14 @@
 from movie_storage import list_movies
 import statistics
+import random
 
+def print_random_movie():
+    """Print a random movie and its rating from the database"""
+    movies = list_movies()
+    if not movies:
+        print("No movies available in the database.")
+        return
+    
 
 def calculate_average_rating(movies):
     """Calculate the average rating of the movies"""
