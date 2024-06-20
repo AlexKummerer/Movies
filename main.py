@@ -9,9 +9,15 @@ def list_movies():
 
 
 def add_movie():
+
     title = input("Enter new movie name: ")
-    year = int(input("Enter new movie year: "))
-    rating = float(input("Enter new movie rating: "))
+    try:
+        year = int(input("Enter new movie year: "))
+        rating = float(input("Enter new movie rating: "))
+    except ValueError:
+        print(
+            "\nInvalid input. Year should be an integer and rating should be a float."
+        )
 
     movie_storage.add_movie(title, year, rating)
 
@@ -28,8 +34,11 @@ def update_movie():
     if movie is None:
         print(f"Movie {movie_name} doesn't exist")
     else:
-        new_rating = float(input("Enter new movie rating: "))
-        movie_storage.update_movie(movie_name, new_rating)
+        try:
+            new_rating = float(input("Enter new movie rating: "))
+            movie_storage.update_movie(movie_name, new_rating)
+        except ValueError:
+            print("Invalid input. Rating should be a float.")
 
 
 menu_options = {

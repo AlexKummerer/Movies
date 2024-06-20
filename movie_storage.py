@@ -6,111 +6,104 @@ FILE_NAME: str = "movies.json"
 
 def list_movies() -> list[dict]:
     """
-    The function loads the information from the JSON
-    file and returns the data.
+    Load the movies from the JSON file and return them.
 
     Returns:
-        list[dict]: Returns a dictionary of dictionaries that
-                    contains the movies information in the database.
+        list[dict]: A list of movie dictionaries.
     """
-
     if not os.path.exists(FILE_NAME):
         print(f"No file named {FILE_NAME} found.")
         return []
+    try:
+        with open(FILE_NAME, "r") as file:
+            movies = json.load(file)
+            if not movies:
+                print("No movies found in the file. s")
+            return movies
+    except json.JSONDecodeError:
+        print("Error reading the movies file. It might be corrupted.")
+        return []
 
-    with open("movies.json", "r") as file:
-        movies = json.load(file)
-        if not movies:
-            print("no movies found in the file.")
-            return []
-        return movies
 
-
-def save_movies(movies: list[dict]):
-    """Save movies to the JSON file
+def save_movies(movies: list[dict]) -> None:
+    """
+    Save the given list of movies to the JSON file.
 
     Args:
-        movies (list[dict]): movies list to save
+        movies (list[dict]): The list of movies to save.
     """
-
-    with open(FILE_NAME, "w") as file:
-        json.dump(movies, file, indent=4)
+    try:
+        with open(FILE_NAME, "w") as file:
+            json.dump(movies, file, indent=4)
+    except Exception as e:
+        print(f"An error occurred while saving movies: {e}")
 
 
 def add_movie(title: str, year: int, rating: float) -> None:
-    """Adds a movie to the movies database.
-    Loads the information from the JSON file, add the movie,
-    and saves it. The function doesn't need to validate the input.
-
-    Args:
-        title (str): title of the movie
-        year (int): year of the movie
-        rating (float): rating of the movie
     """
-    current_movies: list[dict] = list_movies()
-    if not current_movies:
-        current_movies = []
-    new_movie: dict = {"Title": title, "Year": year, "Rating": rating}
+    Add a new movie to the movies database and save it.
+    
+    Args:
+        title (str): The title of the movie.
+        year (int): The year the movie was released.
+        rating (float): The rating of the movie.
+    """
+    current_movies = list_movies()
+    new_movie = {"Title": title, "Year": year, "Rating": rating}
     current_movies.append(new_movie)
-
+    
     try:
         save_movies(current_movies)
-        print(f"Movie {title} succesfully added")
+        print(f"Movie '{title}' successfully added.")
     except Exception as e:
-        print(f"There was an error by adding your movie {title}")
-        print("Error Message:", e)
+        print(f"Error adding the movie '{title}': {e}")
 
 
 def delete_movie(title: str) -> None:
     """
-    Deletes a movie from the movies database.
-    Loads the information from the JSON file, deletes the movie,
-    and saves it. The function doesn't need to validate the input.
+    Delete a movie from the movies database.
+    
+    Args:
+        title (str): The title of the movie to delete.
     """
     movies = list_movies()
-
-    updated_movies = [
-        movie for movie in movies if movie["Title"].lower() != title.lower()
-    ]
-    save_movies(updated_movies)
-
-    print(
-        f"\nMovie '{title}' deleted."
-        if len(movies) != len(updated_movies)
-        else f"\nNo movie found with the title '{title}'."
-    )
+    updated_movies = [movie for movie in movies if movie["Title"].lower() != title.lower()]
+    
+    if len(movies) == len(updated_movies):
+        print(f"No movie found with the title '{title}'.")
+    else:
+        save_movies(updated_movies)
+        print(f"Movie '{title}' deleted.")
+    
 
 
 def get_movie_by_title(title: str) -> dict:
-    """get the movie by title
-
+    """
+    Get a movie by its title.
+    
     Args:
-        title (str): Title of the movie
-
+        title (str): The title of the movie to find.
+    
     Returns:
-        dict: get the information of the film
+        dict: The movie dictionary if found, otherwise None.
     """
     movies = list_movies()
-
-    movie = next(
-        (movie for movie in movies if movie["Title"].lower() == title.lower()), None
-    )
-
-    return movie
+    return next((movie for movie in movies if movie["Title"].lower() == title.lower()), None)
 
 
 def update_movie(title: str, rating: float) -> None:
-    """Updates a movie from the movies database
-
-    Args:
-        title (str): title of the movie
-        rating (float): new rating of the movie
     """
-
+    Update the rating of a movie in the movies database.
+    
+    Args:
+        title (str): The title of the movie to update.
+        rating (float): The new rating of the movie.
+    """
     movies = list_movies()
     for movie in movies:
         if movie["Title"].lower() == title.lower():
             movie["Rating"] = rating
-            break
-    save_movies(movies)
-        
+            save_movies(movies)
+            print(f"Movie '{title}' updated with new rating {rating}.")
+            return
+    print(f"No movie found with the title '{title}'.")
