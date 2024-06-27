@@ -30,3 +30,9 @@ def filter_movies_by_rating_and_year(min_rating, start_year, end_year):
         print(
             f"Title: {movie['Title']}, Year: {movie['Year']}, Rating: {movie['Rating']}"
         )
+
+
+alist = [4,2,8,6,5]
+blist = alist.copy()
+blist[3] = 999
+print(alist)

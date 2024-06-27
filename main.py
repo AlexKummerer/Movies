@@ -38,6 +38,7 @@ def update_movie() -> None:
 
     if movie is None:
         print(f"Movie {movie_name} doesn't exist")
+        return
     else:
         try:
             new_rating = float(input("Enter new movie rating: "))

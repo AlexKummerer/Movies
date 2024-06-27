@@ -1,8 +1,6 @@
 from movie_storage import list_movies
 
 
-
-
 def search_movie(title: str):
     """Search for the movie by given title"""
     movies = list_movies()
@@ -17,5 +15,3 @@ def search_movie(title: str):
             print(
                 f"Title: {movie['Title']}, Year: {movie['Year']}, Rating: {movie['Rating']}"
             )
-
-

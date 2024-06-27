@@ -12,7 +12,7 @@ def list_movies() -> list[dict]:
         print(f"No file named {FILE_NAME} found.")
         return []
     try:
-        with open(FILE_NAME, "r") as file:
+        with open(FILE_NAME, "r", encoding="utf-8") as file:
             movies = json.load(file)
             if not movies:
                 print("No movies found in the file. s")
@@ -29,7 +29,7 @@ def save_movies(movies: list[dict]) -> None:
     try:
         with open(FILE_NAME, "w") as file:
             json.dump(movies, file, indent=4)
-    except Exception as e:
+    except json.JSONDecodeError as e:
         print(f"An error occurred while saving movies: {e}")
 
 
