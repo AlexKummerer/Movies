@@ -1,11 +1,12 @@
-from movie_storage import list_movies
+from typing import Any, Dict
 
 
-def filter_movies_by_rating_and_year(min_rating, start_year, end_year):
+def filter_movies_by_rating_and_year(
+    min_rating: float, start_year: int, end_year: int, movies: Dict[str, Dict[str, Any]]
+):
     """
     Filter movies based on a user-specified rating and year range.
     """
-    movies = list_movies()
 
     if not movies:
         print("No movies available to filter.")
@@ -32,7 +33,7 @@ def filter_movies_by_rating_and_year(min_rating, start_year, end_year):
         )
 
 
-alist = [4,2,8,6,5]
+alist = [4, 2, 8, 6, 5]
 blist = alist.copy()
 blist[3] = 999
 print(alist)

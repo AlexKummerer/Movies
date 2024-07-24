@@ -1,11 +1,10 @@
-from movie_storage import list_movies
+from typing import Any, Dict
 
 
-def search_movie(title: str):
+def search_movie(title: str, movies: Dict[str, Dict[str, Any]]) -> None:
     """Search for the movie by given title"""
-    movies = list_movies()
     searched_movies = [
-        movie for movie in movies if title.lower() in movie["Title"].lower()
+        movie for movie in movies.values() if title.lower() in movie["Title"].lower()
     ]
     if not searched_movies:
         print(f"No movies found containing '{title}'.")
@@ -15,3 +14,6 @@ def search_movie(title: str):
             print(
                 f"Title: {movie['Title']}, Year: {movie['Year']}, Rating: {movie['Rating']}"
             )
+
+
+search_movie("the", {"The Dark Knight": {"Title": "The Dark Knight", "Year": 2008, "Rating": 9.0}})

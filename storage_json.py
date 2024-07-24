@@ -3,26 +3,17 @@ import os
 from IStorage import IStorage
 
 
-
-
 class StorageJson(IStorage):
     def __init__(self, file_path):
         self.file_path = file_path
         self.movies = self.load_movies()
 
-    def load_movies(self):
+    def load_movies(self) -> dict:
         try:
             with open(self.file_path, "r") as file:
                 return json.load(file)
         except (IOError, json.JSONDecodeError):
             return {}
-
-    def list_movies(self) -> dict[dict] :
-        print(f"\n{len(self.movies)} movies in total\n")
-        print(self.movies.items())
-        for movie, details in self.movies.items():
-            print(f"{movie} ({details['Year']}): {details['Rating']}")
-
 
     def save_movies(self) -> None:
         """
@@ -31,11 +22,9 @@ class StorageJson(IStorage):
         try:
             with open(self.file_path, "w") as file:
                 json.dump(self.movies, file, indent=4)
-                   
+
         except Exception as e:
             print(f"Error saving movies: {e}")
-
-
 
     def add_movie(self, title, year, rating, poster):
         if title in self.movies:
@@ -55,11 +44,10 @@ class StorageJson(IStorage):
         """
         if title in self.movies:
             del self.movies[title]
-            self.save_movies( )
+            self.save_movies()
             print(f"Movie '{title}' deleted.")
         else:
             print(f"Movie '{title}' doesn't e.")
-
 
     def update_movie(self, title, rating):
         if title in self.movies:
