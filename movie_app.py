@@ -1,21 +1,35 @@
 from IStorage import IStorage
-from movie_filter import filter_movies_by_rating_and_year
-from movie_search import search_movie
-from movie_stats import print_random_movie, sort_by_rating, sort_by_year, stats
+from movie_utils import MovieUtils
 
 
 class MovieApp:
-    def __init__(self, storage: IStorage):
-        self._storage = storage
+    """
+    MovieApp class to manage the movie database application.
+    """
 
-    def _command_list_movies(self):
+    def __init__(self, storage: IStorage) -> None:
+        """
+        Initialize the MovieApp with a storage object.
+
+        Args:
+            storage (IStorage): The storage object to use for the movie database.
+        """
+        self._storage = storage
+        self.utils = MovieUtils(self._storage.load_movies())
+
+    def _command_list_movies(self) -> None:
+        """
+        List all movies in the database.
+        """
         movies = self._storage.load_movies()
         print(f"\n{len(movies)} movies in total\n")
-        print(movies.items())
         for movie, details in movies.items():
             print(f"{movie} ({details['Year']}): {details['Rating']}")
 
-    def _command_add_movie(self):
+    def _command_add_movie(self) -> None:
+        """
+        Add a new movie to the database.
+        """
         try:
             title = input("Enter new movie name: ")
             year = int(input("Enter new movie year: "))
@@ -27,12 +41,15 @@ class MovieApp:
                 "\nInvalid input. Year should be an integer and rating should be a float."
             )
 
-    def _command_delete_movie(self):
+    def _command_delete_movie(self) -> None:
         """Delete a movie from the database by title."""
         title = input("\nEnter movie name to delete: ")
         self._storage.delete_movie(title)
 
-    def _command_update_movie(self):
+    def _command_update_movie(self) -> None:
+        """
+        Update the rating of a movie in the database.
+        """
         movie_name = input("\nEnter movie name: ")
 
         try:
@@ -41,35 +58,96 @@ class MovieApp:
         except ValueError:
             print("Invalid input. Rating should be a float.")
 
-    def _command_movie_stats(self): 
-        stats(self._storage.load_movies())
-        
-    def _command_random_movie(self):
-        print_random_movie(self._storage.load_movies())
-        
-    def _command_search(self):
+    def _command_movie_stats(self) -> None:
+        """
+        Display statistics for the movie database.
+        """
+        statistics = self.utils.get_movies_statistics()
+        print(
+            f"\nStatistics for {len(self._storage.load_movies())} movies in the database:"
+        )
+        print(f"Average rating: {statistics['average_rating']:.2f}")
+        print("\nBest movie(s) by rating:")
+        for movie in statistics["best_movies"]:
+            print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+        print("\nWorst movie(s) by rating:")
+        for movie in statistics["worst_movies"]:
+            print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+        print("\n")
+
+    def _command_random_movie(self) -> None:
+        """
+        Print a random movie and its rating from the database.
+        """
+        random_movie = self.utils.random_movie()
+        if random_movie:
+            print(
+                f"\nRandom movie: {random_movie['Title']} ({random_movie['Year']}): {random_movie['Rating']}"
+            )
+
+    def _command_search(self) -> None:
+        """
+        Search for a movie by title.
+        """
         search_title = input("Enter part of movie name: ")
-        search_movie(search_title, self._storage.load_movies())
-        
-    def _command_sort_by_rating(self):
-        sort_by_rating(self._storage.load_movies())
-        
-    
-    def _command_sort_by_year(self):
-        sort_by_year(self._storage.load_movies())
-    
-    def _command_filter_movie(self):
+        movie = self.utils.search_movie(search_title)
+        if not movie:
+            print(f"No movies found containing '{search_title}'.")
+        else:
+            print(f"\nMovies matching '{search_title}':")
+            for movie in movie:
+                print(
+                    f"Title: {movie['Title']}, Year: {movie['Year']}, Rating: {movie['Rating']}"
+                )
+            print("\n")
+
+    def _command_sort_by_rating(self) -> None:
+        """
+        Sort movies by their rating in descending order and print the sorted list.
+        """
+        sorted_movies = self.utils.sort_by_rating()
+        print("\nMovies sorted by rating:")
+        for movie in sorted_movies:
+            print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+        print("\n")
+
+    def _command_sort_by_year(self) -> None:
+        """
+        Sort movies by their release year in descending order and print the sorted list.
+        """
+        sorted_movies = self.utils.sort_by_year()
+        print("\nMovies sorted by year:")
+        for movie in sorted_movies:
+            print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+        print("\n")
+
+    def _command_filter_movie(self) -> None:
+        """
+        Filter movies by minimum rating and release year range.
+        """
         try:
             min_rating = float(input("Enter the minimum rating to filter by: "))
             start_year = int(input("Enter the start year to filter by: "))
             end_year = int(input("Enter the end year to filter by: "))
-            filter_movies_by_rating_and_year(min_rating, start_year, end_year, self._storage.load_movies())
+
+            filtered_movies = self.utils.filter_movies_by_rating_and_year(
+                min_rating, start_year, end_year
+            )
+            if not filtered_movies:
+                print(
+                    f"No movies found with a rating of {min_rating} or higher between {start_year} and {end_year}."
+                )
+                return
+            print(
+                f"\nMovies with a rating of {min_rating} or higher between {start_year} and {end_year}:"
+            )
+            for movie in filtered_movies:
+                print(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+            print("\n")
         except ValueError:
             print("Pls enter a valid float for rating and an int for year range")
-    
 
     def _generate_website(self): ...
-
 
     def display_menu(self) -> None:
         """Display the application menu"""
@@ -77,7 +155,6 @@ class MovieApp:
         print("Menu:")
         for key, (descr, _) in self.menu_options.items():
             print(f"{key}. {descr}")
-
 
     menu_options = {
         "0": ("Exit", None),
@@ -93,7 +170,10 @@ class MovieApp:
         "10": ("Filter movies", _command_filter_movie),
     }
 
-    def run(self):
+    def run(self) -> None:
+        """
+        Run the movie database application
+        """
         while True:
             self.display_menu()
             choice = input(f"Enter choice (0-{len(self.menu_options) -1 }): ").strip()
