@@ -18,7 +18,7 @@ class MovieUtils:
 
     def filter_movies_by_rating_and_year(
         self, min_rating=0.0, start_year=None, end_year=None
-    ):
+    ) -> List[Dict[str, MovieData]]:
         """Filter movies by rating and optionally by year.
 
         Args:
@@ -32,9 +32,9 @@ class MovieUtils:
         filtered_movies = [
             movie
             for movie in self.movies.values()
-            if movie.get("Rating", 0) >= min_rating
-            and (start_year is None or movie.get("Year") >= start_year)
-            and (end_year is None or movie.get("Year") <= end_year)
+            if float(movie.get("Rating", 0)) >= min_rating
+            and (start_year is None or int(movie.get("Year")) >= start_year)
+            and (end_year is None or int(movie.get("Year")) <= end_year)
         ]
         return filtered_movies
 
@@ -72,7 +72,7 @@ class MovieUtils:
             List[Dict[str, MovieData]]: A list of movies sorted by rating.
         """
         return sorted(
-            self.movies.values(), key=lambda x: x.get("Rating", 0), reverse=True
+            self.movies.values(), key=lambda x: float(x.get("Rating", 0)), reverse=True
         )
 
     def sort_by_year(self) -> List[Dict[str, MovieData]]:
@@ -82,7 +82,7 @@ class MovieUtils:
             List[Dict[str, MovieData]]: A list of movies sorted by release year.
         """
         return sorted(
-            self.movies.values(), key=lambda x: x.get("Year", 0), reverse=True
+            self.movies.values(), key=lambda x: int(x.get("Year", 0)), reverse=True
         )
 
     def calculate_average_rating(self) -> float:
@@ -92,8 +92,10 @@ class MovieUtils:
             float: The average rating of the movies.
         """
         if not self.movies:
-            return 0
-        total_rating = sum(movie.get("Rating", 0) for movie in self.movies.values())
+            return 0.0
+        total_rating = sum(
+            float(movie.get("Rating", 0)) for movie in self.movies.values()
+        )
         return total_rating / len(self.movies)
 
     def find_best_movies(self, top_n=10) -> List[Dict[str, MovieData]]:
@@ -106,7 +108,7 @@ class MovieUtils:
             List[Dict[str, MovieData]]: A list of the top N best-rated movies.
         """
         sorted_movies = sorted(
-            self.movies.values(), key=lambda x: x.get("Rating", 0), reverse=True
+            self.movies.values(), key=lambda x: float(x.get("Rating", 0)), reverse=True
         )
         return sorted_movies[:top_n]
 
@@ -119,7 +121,9 @@ class MovieUtils:
         Returns:
             List[Dict[str, MovieData]]: A list of the top N worst-rated movies.
         """
-        sorted_movies = sorted(self.movies.values(), key=lambda x: x.get("Rating", 0))
+        sorted_movies = sorted(
+            self.movies.values(), key=lambda x: float(x.get("Rating", 0))
+        )
         return sorted_movies[:top_n]
 
     def get_movies_statistics(self) -> Dict[str, MovieData]:
@@ -127,7 +131,6 @@ class MovieUtils:
 
         Returns:
             Dict[str, MovieData]: A dictionary containing statistics about the movies.
-
         """
         num_movies = len(self.movies)
         average_rating = self.calculate_average_rating()

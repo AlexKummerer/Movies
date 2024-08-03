@@ -34,5 +34,17 @@
         "Year": "1960",
         "Rating": "5.8",
         "Poster": "https://m.media-amazon.com/images/M/MV5BYmRlMmQ3YzItNzNjNS00MmFhLWFmMTItNzA0NzRmOTExZTg2XkEyXkFqcGdeQXVyMjUyMjUzMw@@._V1_SX300.jpg"
+    },
+    "Harry Potter and the Deathly Hallows: Part 2": {
+        "Title": "Harry Potter and the Deathly Hallows: Part 2",
+        "Year": 2011,
+        "Rating": 8.1,
+        "Poster": "https://m.media-amazon.com/images/M/MV5BMGVmMWNiMDktYjQ0Mi00MWIxLTk0N2UtN2ZlYTdkN2IzNDNlXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_SX300.jpg"
+    },
+    "The Hobbit: An Unexpected Journey": {
+        "Title": "The Hobbit: An Unexpected Journey",
+        "Year": 2012,
+        "Rating": 7.8,
+        "Poster": "https://m.media-amazon.com/images/M/MV5BMTcwNTE4MTUxMl5BMl5BanBnXkFtZTcwMDIyODM4OA@@._V1_SX300.jpg"
     }
 }
