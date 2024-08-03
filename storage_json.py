@@ -22,9 +22,9 @@ class StorageJson(IStorage):
             file_path (_type_): File path to the JSON file.
         """
         self.file_path = file_path
-        self.movies = self.load_movies()
+        self.movies = self.load_movies_file()
 
-    def load_movies(self) -> Dict[str, Dict[str, MovieData]]:
+    def load_movies_file(self) -> Dict[str, Dict[str, MovieData]]:
         """
                Load movies from the JSON file.
         s
@@ -46,7 +46,7 @@ class StorageJson(IStorage):
                 f"Error decoding JSON data in file '{self.file_path}'."
             )
 
-    def load_movies_from_api(self, user_search: str) -> Dict[str, Dict[str, MovieData]]:
+    def load_movies_api(self, user_search: str) -> Dict[str, Dict[str, MovieData]]:
 
         api_url = f"https://www.omdbapi.com/?apikey={secret_key}&t={user_search}"
         response = requests.get(api_url)
@@ -127,3 +127,38 @@ class StorageJson(IStorage):
             print(f"Movie '{title}' updated with new rating {rating}.")
         else:
             raise KeyError(f"Movie '{title}' doesn't exist.")
+
+    def serialize_movie_data(self, movie_title, movie_rating, movie_year, movie_poster):
+        output = '<li class="movie">\n'
+        output += f'<img src="{movie_poster}" class="movie-poster" alt="{movie_title} Poster"/>\n'
+        output += f'<div class="movie-title">{movie_title}</div>\n'
+        output += f'<p class="movie-year">{movie_year}</p>\n'
+        output += f'<p class="movie-rating">Rating: {movie_rating}</p>\n'
+        output += "</li>\n"
+        return output
+
+    def generate_website(self):
+        movie_data = self.load_movies_file()
+
+        movies_html = ""
+        for movie, details in movie_data.items():
+            movie_title = movie
+            movie_rating = float(details["Rating"])
+            movie_year = int(details["Year"])
+            movie_poster = str(details["Poster"])
+            movies_html += self.serialize_movie_data(
+                movie_title, movie_rating, movie_year, movie_poster
+            )
+
+        with open("_static/movies_template.html", "r") as file:
+            html_content = file.read()
+
+        updated_html_content = html_content.replace(
+            "__TEMPLATE_TITLE__", "My Movie App"
+        )
+        updated_html_content = updated_html_content.replace(
+            "__TEMPLATE_MOVIE_GRID__", movies_html
+        )
+
+        with open("_static/movie_app.html", "w") as file:
+            file.write(updated_html_content)

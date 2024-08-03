@@ -15,13 +15,13 @@ class MovieApp:
             storage (IStorage): The storage object to use for the movie database.
         """
         self._storage = storage
-        self.utils = MovieUtils(self._storage.load_movies())
+        self.utils = MovieUtils(self._storage.load_movies_file())
 
     def _command_list_movies(self) -> None:
         """
         List all movies in the database.
         """
-        movies = self._storage.load_movies()
+        movies = self._storage.load_movies_file()
         print(f"\n{len(movies)} movies in total\n")
         for movie, details in movies.items():
             print(f"{movie} ({details['Year']}): {details['Rating']}")
@@ -32,7 +32,7 @@ class MovieApp:
         """
         try:
             title = input("Enter new movie name: ")
-            movie = self._storage.load_movies_from_api(title)
+            movie = self._storage.load_movies_api(title)
             print(movie)
             if movie:
                 self._storage.add_movie(
@@ -66,7 +66,7 @@ class MovieApp:
         """
         statistics = self.utils.get_movies_statistics()
         print(
-            f"\nStatistics for {len(self._storage.load_movies())} movies in the database:"
+            f"\nStatistics for {len(self._storage. v())} movies in the database:"
         )
         print(f"Average rating: {statistics['average_rating']:.2f}")
         print("\nBest movie(s) by rating:")
@@ -149,14 +149,17 @@ class MovieApp:
         except ValueError:
             print("Pls enter a valid float for rating and an int for year range")
 
-    def _generate_website(self): ...
-
+    def _command_generate_website(self):
+        self._storage.generate_website()
+        
+        
     def display_menu(self) -> None:
         """Display the application menu"""
         print("\n******* My Movies Database *******")
         print("Menu:")
         for key, (descr, _) in self.menu_options.items():
             print(f"{key}. {descr}")
+            
 
     menu_options = {
         "0": ("Exit", None),
@@ -170,6 +173,7 @@ class MovieApp:
         "8": ("Movies sorted by rating", _command_sort_by_rating),
         "9": ("Movies sorted by year", _command_sort_by_year),
         "10": ("Filter movies", _command_filter_movie),
+        "11": ("Generate website", _command_generate_website),
     }
 
     def run(self) -> None:

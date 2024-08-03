@@ -6,7 +6,7 @@ from movie_utils import MovieData
 
 class IStorage(ABC):
     @abstractmethod
-    def load_movies(self) -> Dict[str, Dict[str, MovieData]]: 
+    def load_movies_file(self) -> Dict[str, Dict[str, MovieData]]: 
         """
         Load movies from the storage.
 
