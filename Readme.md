@@ -53,25 +53,31 @@ movie_app/
 ├── .env
 ├── requirements.txt
 └── README.md
+
 ## Installation
 
 ### Prerequisites
+
 - Python 3.9+
-- pip (Python package installer)
+- `pip` (Python package installer)
 
 ### Steps
-1. Clone the repository:
+
+1. **Clone the repository:**
+
     ```sh
     git clone https://github.com/yourusername/movie_app.git
     cd movie_app
     ```
 
-2. Create a virtual environment:
+2. **Create a virtual environment:**
+
     ```sh
     python3 -m venv .venv
     ```
 
-3. Activate the virtual environment:
+3. **Activate the virtual environment:**
+
     - On Windows:
         ```sh
         .venv\Scripts\activate
@@ -81,13 +87,16 @@ movie_app/
         source .venv/bin/activate
         ```
 
-4. Install dependencies:
+4. **Install dependencies:**
+
     ```sh
     pip install -r requirements.txt
     ```
 
-5. Set up the environment variables:
+5. **Set up the environment variables:**
+
     Create a `.env` file in the root directory of your project and add the following:
+
     ```env
     DATABASE_URL=./data/movies.json
     SECRET_KEY=your_secret_key
@@ -95,7 +104,8 @@ movie_app/
     ```
 
 ## Configuration
-Configuration settings are managed via the `.env` file and loaded using the `python-dotenv` library.
+
+Configuration settings are managed via the `.env` file and loaded using the `python-dotenv` library. 
 
 - `DATABASE_URL`: Path to the JSON file storing movie data.
 - `SECRET_KEY`: Your OMDB API key.
@@ -103,12 +113,20 @@ Configuration settings are managed via the `.env` file and loaded using the `pyt
 
 ## Usage
 
-1. Run the application:
+1. **Run the application:**
+
     ```sh
-    python src/main.py
+    python src/main.py movies.json
     ```
 
-2. Interact with the menu to manage the movie database:
+    or
+
+    ```sh
+    python src/main.py movies.csv
+    ```
+
+2. **Interact with the menu to manage the movie database:**
+
     ```
     ******* My Movies Database *******
     Menu:
@@ -127,15 +145,17 @@ Configuration settings are managed via the `.env` file and loaded using the `pyt
     Enter choice (0-11):
     ```
 
-3. Generate the website:
-    Choose option 11 from the menu to generate the static website. The generated HTML file will be located in the `templates` directory.
+3. **Generate the website:**
+
+    Choose option `11` from the menu to generate the static website. The generated HTML file will be located in the `templates` directory.
 
 ## Contributing
 
 Contributions are welcome! Please fork the repository and create a pull request with your changes. Ensure that your code adheres to the project's coding standards and includes appropriate tests.
 
-## Licence
-This project is licensed under the MIT License. See the LICENSE file for details.
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ### Explanation
 
