@@ -32,14 +32,16 @@ class MovieApp:
         """
         try:
             title = input("Enter new movie name: ")
-            year = int(input("Enter new movie year: "))
-            rating = float(input("Enter new movie rating: "))
-            poster = input("Enter new movie poster: ")
-            self._storage.add_movie(title, year, rating, poster)
-        except ValueError:
-            print(
-                "\nInvalid input. Year should be an integer and rating should be a float."
-            )
+            movie = self._storage.load_movies_from_api(title)
+            print(movie)
+            if movie:
+                self._storage.add_movie(
+                    movie["Title"], movie["Year"], movie["imdbRating"], movie["Poster"]
+                )
+            else:
+                print(f"Movie '{title}' not found.")
+        except KeyError as e:
+            print(f"Error adding movie: {e}")
 
     def _command_delete_movie(self) -> None:
         """Delete a movie from the database by title."""

@@ -10,5 +10,17 @@
         "Year": 2003,
         "Rating": 7.2,
         "Poster": "https://www.imdb.com/title/tt0234215/"
+    },
+    "Joker": {
+        "Title": "Joker",
+        "Year": "2019",
+        "Rating": "8.4",
+        "Poster": "https://m.media-amazon.com/images/M/MV5BNGVjNWI4ZGUtNzE0MS00YTJmLWE0ZDctN2ZiYTk2YmI3NTYyXkEyXkFqcGdeQXVyMTkximdbRatingNjUyNQ@@._V1_SX300.jpg"
+    },
+    "Astral City: A Spiritual Journey": {
+        "Title": "Astral City: A Spiritual Journey",
+        "Year": "2010",
+        "Rating": "6.4",
+        "Poster": "https://m.media-amazon.com/images/M/MV5BMTgwMzk4MTEzNV5BMl5BanBnXkFtZTcwNjA4ODUwNw@@._V1_SX300.jpg"
     }
 }
