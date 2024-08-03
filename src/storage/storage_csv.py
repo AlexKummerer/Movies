@@ -1,6 +1,7 @@
 # src/storage/storage_csv.py
 
 import csv
+import os
 from typing import Dict
 
 import requests
@@ -10,6 +11,7 @@ from src.app.movie_utils import MovieData
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class CsvStorage(IStorage):
     def __init__(self, file_path: str) -> None:
@@ -33,14 +35,20 @@ class CsvStorage(IStorage):
             FileNotFoundError: If the file doesn't exist.
         """
         try:
-            with open(self.file_path, mode='r') as file:
+            with open(self.file_path, mode="r") as file:
                 reader = csv.DictReader(file)
-                movies = {row['Title']: {
-                    'Title': row['Title'],
-                    'Year': int(row['Year']),
-                    'Rating': float(row['Rating']),
-                    'Poster': row['Poster']
-                } for row in reader}
+                movies = {
+                    row["Title"]: {
+                        "Title": row["Title"],
+                        "Year": int(row["Year"]),
+                        "Rating": float(row["Rating"]),
+                        "Poster": row["Poster"],
+                        "Notes": row.get(
+                            "Notes", ""
+                        ),  # Handle case where 'Notes' might be missing
+                    }
+                    for row in reader
+                }
             return movies
         except FileNotFoundError:
             logger.error(f"File '{self.file_path}' doesn't exist.")
@@ -64,12 +72,9 @@ class CsvStorage(IStorage):
             )
 
     def save_movies(self) -> None:
-        """
-        Save the movies to the CSV file.
-        """
         try:
-            with open(self.file_path, mode='w', newline='') as file:
-                fieldnames = ['Title', 'Year', 'Rating', 'Poster']
+            with open(self.file_path, mode="w", newline="") as file:
+                fieldnames = ["Title", "Year", "Rating", "Poster", "Notes"]
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
                 writer.writeheader()
                 for movie in self.movies.values():
@@ -80,24 +85,16 @@ class CsvStorage(IStorage):
             raise
 
     def add_movie(self, title: str, year: int, rating: float, poster: str) -> None:
-        """
-        Add a new movie to the movies database.
-
-        Args:
-            title (str): The title of the movie.
-            year (int): The year the movie was released.
-            rating (float): The rating of the movie.
-            poster (str): The URL of the movie poster.
-
-        Raises:
-            ValueError: If the movie already exists in the database.
-            KeyError: If there was an error adding the movie to the database.
-        """
         if title in self.movies:
             raise ValueError(f"Movie '{title}' already exists.")
-        new_movie = {"Title": title, "Year": year, "Rating": rating, "Poster": poster}
+        new_movie = {
+            "Title": title,
+            "Year": year,
+            "Rating": rating,
+            "Poster": poster,
+            "Notes": "",
+        }
         self.movies[title] = new_movie
-
         try:
             self.save_movies()
             logger.info(f"Movie '{title}' successfully added.")
@@ -123,21 +120,21 @@ class CsvStorage(IStorage):
             logger.error(f"Movie '{title}' doesn't exist.")
             raise KeyError(f"Movie '{title}' doesn't exist.")
 
-    def update_movie(self, title: str, rating: float) -> None:
+    def update_movie(self, title: str, notes: str) -> None:
         """
         Update the rating of a movie in the movies database.
 
         Args:
             title (str): The title of the movie to update.
-            rating (float): The new rating of the movie.
+            notes (str): The notes of the movie.
 
         Raises:
-            KeyError: If the movie doesn't exist in the database.
+            KeyError: If there was an error updating the movie in the database.
         """
         if title in self.movies:
-            self.movies[title]["Rating"] = rating
+            self.movies[title]["Notes"] = notes
             self.save_movies()
-            logger.info(f"Movie '{title}' updated with new rating {rating}.")
+            logger.info(f"Movie '{title}' successfully updated.")
         else:
             logger.error(f"Movie '{title}' doesn't exist.")
             raise KeyError(f"Movie '{title}' doesn't exist.")
@@ -154,11 +151,12 @@ class CsvStorage(IStorage):
                 f'<div class="movie-title">{movie["Title"]}</div>'
                 f'<p class="movie-year">{movie["Year"]}</p>'
                 f'<p class="movie-rating">Rating: {movie["Rating"]}</p>'
-                f'</li>'
+                f'<p class="movie-notes">{movie["Notes"]}</p>'
+                f"</li>"
             )
 
         try:
-            template_path = os.path.join(Config.TEMPLATE_PATH, 'movies_template.html')
+            template_path = os.path.join(Config.TEMPLATE_PATH, "movies_template.html")
             with open(template_path, "r") as file:
                 html_content = file.read()
 
@@ -166,7 +164,7 @@ class CsvStorage(IStorage):
                 "__TEMPLATE_TITLE__", "My Movie App"
             ).replace("__TEMPLATE_MOVIE_GRID__", movies_html)
 
-            output_path = os.path.join(Config.TEMPLATE_PATH, 'movie_app.html')
+            output_path = os.path.join(Config.TEMPLATE_PATH, "movie_app.html")
             with open(output_path, "w") as file:
                 file.write(updated_html_content)
 

@@ -45,6 +45,7 @@ class MovieApp:
                     int(movie["Year"]),
                     float(movie["Rating"]),
                     movie["Poster"],
+                    
                 )
                 logger.info(f"Movie '{title}' successfully added.")
             else:
@@ -64,18 +65,14 @@ class MovieApp:
             logger.error(f"Error deleting movie: {e}")
 
     def _command_update_movie(self) -> None:
-        """
-        Update the rating of a movie in the database.
-        """
         movie_name = input("\nEnter movie name: ")
         try:
-            new_rating = float(input("Enter new movie rating: "))
-            self._storage.update_movie(movie_name, new_rating)
-            logger.info(f"Movie '{movie_name}' updated with new rating {new_rating}.")
-        except ValueError:
-            logger.error("Invalid input. Rating should be a float.")
+            notes = input("Enter movie notes: ")
+            self._storage.update_movie(movie_name, notes)
+            print(f"Movie '{movie_name}' successfully updated.")
         except KeyError as e:
-            logger.error(f"Error updating movie: {e}")
+            print(f"Error updating movie: {e}")
+
 
     def _command_movie_stats(self) -> None:
         """

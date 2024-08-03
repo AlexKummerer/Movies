@@ -53,6 +53,7 @@ class JsonStorage(IStorage):
                 "Year": movie_data["Year"],
                 "Rating": float(movie_data["imdbRating"]),
                 "Poster": movie_data["Poster"],
+                "Notes": "",
             }
         else:
             logger.error(f"Error: {response.status_code} {response.text}")
@@ -116,21 +117,21 @@ class JsonStorage(IStorage):
             logger.error(f"Movie '{title}' doesn't exist.")
             raise KeyError(f"Movie '{title}' doesn't exist.")
 
-    def update_movie(self, title: str, rating: float) -> None:
+    def update_movie(self, title: str, notes: str) -> None:
         """
         Update the rating of a movie in the movies database.
 
         Args:
             title (str): The title of the movie to update.
-            rating (float): The new rating of the movie.
+            notes (str): The notes of the movie.
 
         Raises:
-            KeyError: If the movie doesn't exist in the database.
+            KeyError: If there was an error updating the movie in the database.
         """
         if title in self.movies:
-            self.movies[title]["Rating"] = rating
+            self.movies[title]["Notes"] = notes
             self.save_movies()
-            logger.info(f"Movie '{title}' updated with new rating {rating}.")
+            logger.info(f"Movie '{title}' successfully updated.")
         else:
             logger.error(f"Movie '{title}' doesn't exist.")
             raise KeyError(f"Movie '{title}' doesn't exist.")
@@ -141,12 +142,14 @@ class JsonStorage(IStorage):
         """
         movies_html = ""
         for movie in self.movies.values():
+
             movies_html += (
                 f'<li class="movie">'
                 f'<img src="{movie["Poster"]}" class="movie-poster" alt="{movie["Title"]} Poster"/>'
                 f'<div class="movie-title">{movie["Title"]}</div>'
                 f'<p class="movie-year">{movie["Year"]}</p>'
                 f'<p class="movie-rating">Rating: {movie["Rating"]}</p>'
+                f'<p class="movie-notes">{movie["Notes"]}</p>'
                 f"</li>"
             )
         try:

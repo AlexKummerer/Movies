@@ -7,6 +7,7 @@ class MovieData(TypedDict):
     Year: int
     Rating: float
     Poster: str
+    Notes: str
 
 
 class MovieUtils:

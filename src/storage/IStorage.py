@@ -51,13 +51,13 @@ class IStorage(ABC):
         pass
 
     @abstractmethod
-    def update_movie(self, title: str, rating: float) -> None:
+    def update_movie(self, title: str, notes: str) -> None:
         """
         Update the rating of a movie in the storage.
 
         Args:
             title (str): The title of the movie to update.
-            rating (float): The new rating of the movie.
+            notes (str): The notes of the movie.
 
         Raises:
             KeyError: If there was an error updating the movie in the storage.
