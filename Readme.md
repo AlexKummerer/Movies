@@ -4,13 +4,13 @@ A Python-based application to manage a movie database, with functionalities to a
 
 ## Table of Contents
 
-- Features
-- Project Structure
-- Installation
-- Configuration
-- Usage
-- Contributing
-- License
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
