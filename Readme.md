@@ -16,39 +16,40 @@ A Python-based application to manage a movie database, with functionalities to a
 
 - Add new movies to the database
 - Delete movies from the database
-- Update movie ratings
+- Update movie notes
 - List all movies
 - Search for movies by title
 - Filter movies by rating and release year
 - Sort movies by rating and release year
 - Display statistics (total movies, average rating, best and worst movies)
 - Generate a static website to display the movies
+- Click on movie posters to go to their IMDb page
 
 ## Project Structure
 
 movie_app/
 │
 ├── data/
-│   └── movies.json
+│ └── movies.json
 │
 ├── templates/
-│   ├── movie_app.html
-│   └── movies_template.html
+│ ├── movie_app.html
+│ └── movies_template.html
 │
 ├── static/
-│   └── style.css
+│ └── style.css
 │
 ├── src/
-│   ├── storage/
-│   │   ├── __init__.py
-│   │   ├── IStorage.py
-│   │   └── storage_json.py
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── movie_app.py
-│   │   └── movie_utils.py
-│   ├── config.py
-│   └── main.py
+│ ├── storage/
+│ │ ├── **init**.py
+│ │ ├── IStorage.py
+│ │ └── storage_json.py
+│ ├── app/
+│ │ ├── **init**.py
+│ │ ├── movie_app.py
+│ │ └── movie_utils.py
+│ ├── config.py
+│ └── main.py
 │
 ├── .env
 ├── requirements.txt
@@ -63,49 +64,52 @@ movie_app/
 
 ### Steps
 
-1. **Clone the repository:**
+1.  **Clone the repository:**
 
     ```sh
     git clone https://github.com/yourusername/movie_app.git
     cd movie_app
     ```
 
-2. **Create a virtual environment:**
+2.  **Create a virtual environment:**
 
     ```sh
     python3 -m venv .venv
     ```
 
-3. **Activate the virtual environment:**
+3.  **Activate the virtual environment:**
 
     - On Windows:
-        ```sh
-        .venv\Scripts\activate
-        ```
+      ```sh
+      .venv\Scripts\activate
+      ```
     - On macOS and Linux:
-        ```sh
-        source .venv/bin/activate
-        ```
+      ```sh
+      source .venv/bin/activate
+      ```
 
-4. **Install dependencies:**
+4.  **Install dependencies:**
 
     ```sh
     pip install -r requirements.txt
     ```
 
-5. **Set up the environment variables:**
+5.  **Set up the environment variables:**
 
-    Create a `.env` file in the root directory of your project and add the following:
+        Create a `.env` file in the root directory of your project and add the following:
 
-    ```env
-    DATABASE_URL=./data/movies.json
-    SECRET_KEY=your_secret_key
+        ```env
+
+    DATABASE_URL=path/to/your/movies.json # or movies.csv
+    SECRET_KEY=your_omdb_api_key
     DEBUG=True
-    ```
+    TEMPLATE_PATH=path/to/your/templates
+
+        ```
 
 ## Configuration
 
-Configuration settings are managed via the `.env` file and loaded using the `python-dotenv` library. 
+Configuration settings are managed via the `.env` file and loaded using the `python-dotenv` library.
 
 - `DATABASE_URL`: Path to the JSON file storing movie data.
 - `SECRET_KEY`: Your OMDB API key.
@@ -115,39 +119,39 @@ Configuration settings are managed via the `.env` file and loaded using the `pyt
 
 1. **Run the application:**
 
-    ```sh
-    python src/main.py movies.json
-    ```
+   ```sh
+   python src/main.py movies.json
+   ```
 
-    or
+   or
 
-    ```sh
-    python src/main.py movies.csv
-    ```
+   ```sh
+   python src/main.py movies.csv
+   ```
 
 2. **Interact with the menu to manage the movie database:**
 
-    ```
-    ******* My Movies Database *******
-    Menu:
-    0. Exit
-    1. List movies
-    2. Add movie
-    3. Delete movie
-    4. Update movie
-    5. Stats
-    6. Random movie
-    7. Search movie
-    8. Movies sorted by rating
-    9. Movies sorted by year
-    10. Filter movies
-    11. Generate website
-    Enter choice (0-11):
-    ```
+   ```
+   ******* My Movies Database *******
+   Menu:
+   0. Exit
+   1. List movies
+   2. Add movie
+   3. Delete movie
+   4. Update movie
+   5. Stats
+   6. Random movie
+   7. Search movie
+   8. Movies sorted by rating
+   9. Movies sorted by year
+   10. Filter movies
+   11. Generate website
+   Enter choice (0-11):
+   ```
 
 3. **Generate the website:**
 
-    Choose option `11` from the menu to generate the static website. The generated HTML file will be located in the `templates` directory.
+   Choose option `11` from the menu to generate the static website. The generated HTML file will be located in the `templates` directory.
 
 ## Contributing
 
@@ -166,6 +170,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Usage**: How to run the application and interact with it.
 - **Contributing**: Guidelines for contributing to the project.
 - **License**: Information about the project's license.
-
-
-
