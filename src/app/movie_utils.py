@@ -1,8 +1,16 @@
+"""Module containing utility functions for movie-related functionalities.
+
+Returns:
+    _type_:  A class that contains utility functions for movie-related functionalities.
+"""
+
 from typing import Dict, List, TypedDict
 import random
 
 
 class MovieData(TypedDict):
+    """A type definition for the movie data dictionary."""
+
     Title: str
     Year: int
     Rating: float

@@ -1,8 +1,13 @@
-# src/app/movie_app.py
+"""
+MovieApp class to manage the movie database application.
 
-from src.storage.IStorage import IStorage
-from src.app.movie_utils import MovieUtils
+Returns:
+    _type_: None
+"""
+
 import logging
+from src.storage.i_storage import IStorage
+from src.app.movie_utils import MovieUtils
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,9 +33,9 @@ class MovieApp:
         List all movies in the database.
         """
         movies = self._storage.load_movies_file()
-        logger.info(f"\n{len(movies)} movies in total\n")
+        logger.info("\n%d movies in total\n", len(movies))
         for movie, details in movies.items():
-            logger.info(f"{movie} ({details['Year']}): {details['Rating']}")
+            logger.info("%s (%d): %f", movie, details["Year"], details["Rating"])
 
     def _command_add_movie(self) -> None:
         """
@@ -41,18 +46,19 @@ class MovieApp:
             movie = self._storage.load_movies_api(title)
             if movie:
                 self._storage.add_movie(
-                    movie["Title"],
-                    int(movie["Year"]),
-                    float(movie["Rating"]),
-                    movie["Poster"],
-                    movie["ImdbID"],
-                    
+                    movie={
+                        "Title": movie["Title"],
+                        "Year": movie["Year"],
+                        "Rating": movie["Rating"],
+                        "Poster": movie["Poster"],
+                        "Notes": "",
+                        "ImdbID": movie["ImdbID"],
+                    }
                 )
-                logger.info(f"Movie '{title}' successfully added.")
             else:
-                logger.warning(f"Movie '{title}' not found.")
+                logger.info("Movie '%s' not found.", title)
         except KeyError as e:
-            logger.error(f"Error adding movie: {e}")
+            logger.error("Error adding movie: %s", e)
 
     def _command_delete_movie(self) -> None:
         """
@@ -61,19 +67,18 @@ class MovieApp:
         title = input("\nEnter movie name to delete: ")
         try:
             self._storage.delete_movie(title)
-            logger.info(f"Movie '{title}' deleted.")
+            logger.info("Movie '%s' deleted.", title)
         except KeyError as e:
-            logger.error(f"Error deleting movie: {e}")
+            logger.error("Error deleting movie: %s", e)
 
     def _command_update_movie(self) -> None:
         movie_name = input("\nEnter movie name: ")
         try:
             notes = input("Enter movie notes: ")
             self._storage.update_movie(movie_name, notes)
-            print(f"Movie '{movie_name}' successfully updated.")
+            logger.info("Movie '%s' successfully updated.", movie_name)
         except KeyError as e:
-            print(f"Error updating movie: {e}")
-
+            logger.error("Error updating movie: %s", e)
 
     def _command_movie_stats(self) -> None:
         """
@@ -81,15 +86,16 @@ class MovieApp:
         """
         statistics = self.utils.get_movies_statistics()
         logger.info(
-            f"\nStatistics for {statistics['total_movies']} movies in the database:"
+            "\nStatistics for %d movies in the database:", statistics["total_movies"]
         )
-        logger.info(f"Average rating: {statistics['average_rating']:.2f}")
+        logger.info("Average rating: %.2f", statistics["average_rating"])
         logger.info("\nBest movie(s) by rating:")
         for movie in statistics["best_movies"]:
-            logger.info(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+            logger.info("%s (%d): %f", movie["Title"], movie["Year"], movie["Rating"])
         logger.info("\nWorst movie(s) by rating:")
         for movie in statistics["worst_movies"]:
-            logger.info(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+            logger.info("%s (%d): %f", movie["Title"], movie["Year"], movie["Rating"])
+
         logger.info("\n")
 
     def _command_random_movie(self) -> None:
@@ -99,7 +105,10 @@ class MovieApp:
         random_movie = self.utils.random_movie()
         if random_movie:
             logger.info(
-                f"\nRandom movie: {random_movie['Title']} ({random_movie['Year']}): {random_movie['Rating']}"
+                "\nRandom movie: %s (%d): %f",
+                random_movie["Title"],
+                random_movie["Year"],
+                random_movie["Rating"],
             )
 
     def _command_search(self) -> None:
@@ -109,12 +118,15 @@ class MovieApp:
         search_title = input("Enter part of movie name: ")
         movies = self.utils.search_movie(search_title)
         if not movies:
-            logger.warning(f"No movies found containing '{search_title}'.")
+            logger.info("No movies found containing '%s'.", search_title)
         else:
-            logger.info(f"\nMovies matching '{search_title}':")
+            logger.info("\nMovies matching '%s':", search_title)
             for movie in movies:
                 logger.info(
-                    f"Title: {movie['Title']}, Year: {movie['Year']}, Rating: {movie['Rating']}"
+                    "Title: %s, Year: %d, Rating: %f",
+                    movie["Title"],
+                    movie["Year"],
+                    movie["Rating"],
                 )
             logger.info("\n")
 
@@ -125,7 +137,7 @@ class MovieApp:
         sorted_movies = self.utils.sort_by_rating()
         logger.info("\nMovies sorted by rating:")
         for movie in sorted_movies:
-            logger.info(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+            logger.info("%s (%d): %f", movie["Title"], movie["Year"], movie["Rating"])
         logger.info("\n")
 
     def _command_sort_by_year(self) -> None:
@@ -135,7 +147,7 @@ class MovieApp:
         sorted_movies = self.utils.sort_by_year()
         logger.info("\nMovies sorted by year:")
         for movie in sorted_movies:
-            logger.info(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+            logger.info("%s (%d): %f", movie["Title"], movie["Year"], movie["Rating"])
         logger.info("\n")
 
     def _command_filter_movie(self) -> None:
@@ -151,19 +163,27 @@ class MovieApp:
                 min_rating, start_year, end_year
             )
             if not filtered_movies:
-                logger.warning(
-                    f"No movies found with a rating of {min_rating} or higher between {start_year} and {end_year}."
+                logger.info(
+                    "No movies found with a rating of %f or higher between %d and %d.",
+                    min_rating,
+                    start_year,
+                    end_year,
                 )
                 return
             logger.info(
-                f"\nMovies with a rating of {min_rating} or higher between {start_year} and {end_year}:"
+                "\nMovies with a rating of %f or higher between %d and %d:",
+                min_rating,
+                start_year,
+                end_year,
             )
             for movie in filtered_movies:
-                logger.info(f"{movie['Title']} ({movie['Year']}): {movie['Rating']}")
+                logger.info(
+                    "%s (%d): %f", movie["Title"], movie["Year"], movie["Rating"]
+                )
             logger.info("\n")
         except ValueError:
             logger.error(
-                "Please enter a valid float for rating and an int for year range."
+                "Please enter a valid float for rating and an int for year range"
             )
 
     def _command_generate_website(self) -> None:
@@ -177,7 +197,7 @@ class MovieApp:
         logger.info("\n******* My Movies Database *******")
         logger.info("Menu:")
         for key, (descr, _) in self.menu_options.items():
-            logger.info(f"{key}. {descr}")
+            logger.info("%s. %s", key, descr)
 
     menu_options = {
         "0": ("Exit", None),
@@ -206,11 +226,12 @@ class MovieApp:
                 if choice == "0":
                     logger.info("\nExiting the application. Goodbye!")
                     break
-                logger.info(f"\nExecuting: {descr}")
+                logger.info("\nExecuting: %s", descr)
                 function(self)
             else:
                 logger.warning(
-                    f"\nInvalid choice. Please enter a number between 0 and {len(self.menu_options) - 1}."
+                    "\nInvalid choice. Please enter a number between 0 and %d.",
+                    len(self.menu_options) - 1,
                 )
 
             input("\nPress Enter to return to the menu...")
