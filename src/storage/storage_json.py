@@ -54,6 +54,7 @@ class JsonStorage(IStorage):
                 "Rating": float(movie_data["imdbRating"]),
                 "Poster": movie_data["Poster"],
                 "Notes": "",
+                "ImdbID": movie_data["imdbID"],
             }
         else:
             logger.error(f"Error: {response.status_code} {response.text}")
@@ -145,7 +146,9 @@ class JsonStorage(IStorage):
 
             movies_html += (
                 f'<li class="movie">'
+                f'<a href="https://www.imdb.com/title/{movie["ImdbID"]}" target="_blank">'
                 f'<img src="{movie["Poster"]}" class="movie-poster" alt="{movie["Title"]} Poster"/>'
+                f"</a>"
                 f'<div class="movie-title">{movie["Title"]}</div>'
                 f'<p class="movie-year">{movie["Year"]}</p>'
                 f'<p class="movie-rating">Rating: {movie["Rating"]}</p>'

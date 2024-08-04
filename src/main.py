@@ -26,7 +26,7 @@ def create_empty_file(file_path: str):
     elif ext.lower() == ".csv":
         with open(file_path, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow(["Title", "Year", "Rating", "Poster", "Notes"])  # Write CSV headers
+            writer.writerow(["Title", "Year", "Rating", "Poster", "Notes", "ImdbID"])  # Write CSV headers
 
 
 def get_storage(file_path: str):

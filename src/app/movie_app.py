@@ -45,6 +45,7 @@ class MovieApp:
                     int(movie["Year"]),
                     float(movie["Rating"]),
                     movie["Poster"],
+                    movie["ImdbID"],
                     
                 )
                 logger.info(f"Movie '{title}' successfully added.")

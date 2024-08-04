@@ -46,6 +46,7 @@ class CsvStorage(IStorage):
                         "Notes": row.get(
                             "Notes", ""
                         ),  # Handle case where 'Notes' might be missing
+                        "ImdbID": row.get("ImdbID", ""),
                     }
                     for row in reader
                 }
@@ -64,6 +65,8 @@ class CsvStorage(IStorage):
                 "Year": movie_data["Year"],
                 "Rating": float(movie_data["imdbRating"]),
                 "Poster": movie_data["Poster"],
+                "Notes": "",
+                "ImdbID": movie_data["imdbID"],
             }
         else:
             logger.error(f"Error: {response.status_code} {response.text}")
@@ -74,7 +77,7 @@ class CsvStorage(IStorage):
     def save_movies(self) -> None:
         try:
             with open(self.file_path, mode="w", newline="") as file:
-                fieldnames = ["Title", "Year", "Rating", "Poster", "Notes"]
+                fieldnames = ["Title", "Year", "Rating", "Poster", "Notes", "ImdbID"]
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
                 writer.writeheader()
                 for movie in self.movies.values():
@@ -84,7 +87,9 @@ class CsvStorage(IStorage):
             logger.error(f"Error saving movies: {e}")
             raise
 
-    def add_movie(self, title: str, year: int, rating: float, poster: str) -> None:
+    def add_movie(
+        self, title: str, year: int, rating: float, poster: str, imdb_id: str
+    ) -> None:
         if title in self.movies:
             raise ValueError(f"Movie '{title}' already exists.")
         new_movie = {
@@ -93,6 +98,7 @@ class CsvStorage(IStorage):
             "Rating": rating,
             "Poster": poster,
             "Notes": "",
+            "ImdbID": imdb_id,
         }
         self.movies[title] = new_movie
         try:
@@ -147,7 +153,9 @@ class CsvStorage(IStorage):
         for movie in self.movies.values():
             movies_html += (
                 f'<li class="movie">'
+                f'<a href="https://www.imdb.com/title/{movie["ImdbID"]}" target="_blank">'
                 f'<img src="{movie["Poster"]}" class="movie-poster" alt="{movie["Title"]} Poster"/>'
+                f'</a>'
                 f'<div class="movie-title">{movie["Title"]}</div>'
                 f'<p class="movie-year">{movie["Year"]}</p>'
                 f'<p class="movie-rating">Rating: {movie["Rating"]}</p>'
