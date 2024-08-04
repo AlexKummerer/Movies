@@ -32,6 +32,8 @@ class JsonStorage(BaseStorage):
         except json.JSONDecodeError:
             logger.error("Error decoding JSON data in file '%s'.", self.file_path)
             raise
+        
+        
 
     def save_movies(self) -> None:
         """

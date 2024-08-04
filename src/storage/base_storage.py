@@ -62,7 +62,7 @@ class BaseStorage(IStorage):
             movie_data = response.json()
             rating = movie_data["imdbRating"]
             rating = 0.0 if rating == "N/A" else float(rating)
-            return {
+            movie_dict = {
                 "Title": movie_data["Title"],
                 "Year": movie_data["Year"],
                 "Rating": rating,
@@ -70,10 +70,19 @@ class BaseStorage(IStorage):
                 "Notes": "",
                 "ImdbID": movie_data["imdbID"],
             }
-        logger.error("Error: %d %s", response.status_code, response.text)
-        raise requests.RequestException(
-            f"Error: {response.status_code} {response.text}"
-        )
+            logger.debug(f"load_movies_api returning: {movie_dict}")
+            return movie_dict
+
+        else:
+            logger.error("Error: %d %s", response.status_code, response.text)
+            raise requests.RequestException(
+                f"Error: {response.status_code} {response.text}"
+            )
+
+    def add_movie(self, movie: MovieDetails) -> None:
+        """
+        Module for handling base storage functionality for movie data."""
+        raise NotImplementedError("Subclasses should implement this method")
 
     def save_movies(self) -> None:
         """
@@ -83,36 +92,6 @@ class BaseStorage(IStorage):
             NotImplementedError: Subclasses should implement this method.
         """
         raise NotImplementedError("Subclasses should implement this method")
-
-    def add_movie(self, movie: MovieDetails) -> None:
-        """
-        Add a new movie to the storage.
-
-        Args:
-            movie (MovieDetails): The movie details to add.
-
-        Raises:
-            ValueError: If the movie already exists.
-            KeyError: If there is an error adding the movie.
-        """
-        if movie.title in self.movies:
-            raise ValueError(f"Movie '{movie.title}' already exists.")
-        new_movie = {
-           "Title": movie.title,
-            "Year": movie.year,
-            "Rating": movie.rating,
-            "Poster": movie.poster,
-            "Notes": movie.notes,
-            "ImdbID": movie.imdb_id,
-        }
-        self.movies[movie.title] = new_movie
-        try:
-            self.save_movies()
-            logger.info("Movie '%s' successfully added.", movie.title)
-        except Exception as e:
-            logger.error("Error adding the movie '%s': %s", movie.title, e)
-            raise KeyError(f"Error adding the movie '{movie.title}': {e}") from e
-
 
     def delete_movie(self, title: str) -> None:
         """

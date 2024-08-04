@@ -9,6 +9,7 @@ import csv
 import logging
 
 from typing import Dict
+from src.app.movie_details import MovieDetails
 from src.storage.base_storage import BaseStorage
 from src.app.movie_utils import MovieData
 
@@ -48,6 +49,35 @@ class CsvStorage(BaseStorage):
         except FileNotFoundError:
             logger.error("File %s doesn't exist.", self.file_path)
             raise
+
+    def add_movie(self, movie: MovieDetails) -> None:
+        """
+        Add a new movie to the storage.
+
+        Args:
+            movie (MovieDetails): The movie details to add.
+
+        Raises:
+            ValueError: If the movie already exists.
+            KeyError: If there is an error adding the movie.
+        """
+        if movie.title in self.movies:
+            raise ValueError(f"Movie '{movie.title}' already exists.")
+        new_movie = {
+            "Title": movie.title,
+            "Year": movie.year,
+            "Rating": movie.rating,
+            "Poster": movie.poster,
+            "Notes": movie.notes,
+            "ImdbID": movie.imdb_id,
+        }
+        self.movies[movie.title] = new_movie
+        try:
+            self.save_movies()
+            logger.info("Movie '%s' successfully added.", movie.title)
+        except Exception as e:
+            logger.error("Error adding the movie '%s': %s", movie.title, e)
+            raise KeyError(f"Error adding the movie '{movie.title}': {e}") from e
 
     def save_movies(self) -> None:
         """

@@ -6,6 +6,7 @@ Returns:
 """
 
 import logging
+from src.app.movie_details import MovieDetails
 from src.storage.i_storage import IStorage
 from src.app.movie_utils import MovieUtils
 
@@ -43,18 +44,18 @@ class MovieApp:
         """
         try:
             title = input("Enter new movie name: ")
-            movie = self._storage.load_movies_api(title)
-            if movie:
-                self._storage.add_movie(
-                    movie={
-                        "Title": movie["Title"],
-                        "Year": movie["Year"],
-                        "Rating": movie["Rating"],
-                        "Poster": movie["Poster"],
-                        "Notes": "",
-                        "ImdbID": movie["ImdbID"],
-                    }
+            movie_data = self._storage.load_movies_api(title)
+            logger.debug(f"Received movie data from API: {movie_data}")
+            if movie_data:
+                movie = MovieDetails(
+                    title=movie_data["Title"],
+                    year=int(movie_data["Year"]),
+                    rating=float(movie_data["Rating"]),
+                    poster=movie_data["Poster"],
+                    imdb_id=movie_data["ImdbID"],
                 )
+                logger.debug(f"Created MovieDetails object: {movie}")
+                self._storage.add_movie(movie)
             else:
                 logger.info("Movie '%s' not found.", title)
         except KeyError as e:

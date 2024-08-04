@@ -13,12 +13,12 @@ import sys
 import os
 import logging
 import argparse
-from src.app.movie_app import MovieApp
-from src.storage.storage_json import JsonStorage
-from src.storage.storage_csv import CsvStorage
 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from app.movie_app import MovieApp
+from src.storage.storage_json import JsonStorage
+from src.storage.storage_csv import CsvStorage
 
 
 logging.basicConfig(level=logging.INFO)
@@ -86,7 +86,6 @@ def main() -> None:
         app.run()
     except (ValueError, OSError) as e:
         logger.error("Failed to start the application: %s", e)
-
 
 
 if __name__ == "__main__":

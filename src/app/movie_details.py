@@ -11,5 +11,5 @@ class MovieDetails:
     year: int
     rating: float
     poster: str
-    imdb_id: str
+    imdb_id: str = ""
     notes: str = ""
