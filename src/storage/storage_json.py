@@ -48,10 +48,12 @@ class JsonStorage(IStorage):
         response = requests.get(api_url)
         if response.status_code == 200:
             movie_data = response.json()
+            rating = movie_data["imdbRating"]
+            rating = 0.0 if rating == "N/A" else float(rating)
             return {
                 "Title": movie_data["Title"],
                 "Year": movie_data["Year"],
-                "Rating": float(movie_data["imdbRating"]),
+                "Rating": rating,
                 "Poster": movie_data["Poster"],
                 "Notes": "",
                 "ImdbID": movie_data["imdbID"],
@@ -90,7 +92,14 @@ class JsonStorage(IStorage):
         """
         if title in self.movies:
             raise ValueError(f"Movie '{title}' already exists.")
-        new_movie = {"Title": title, "Year": year, "Rating": rating, "Poster": poster}
+        new_movie = {
+            "Title": title,
+            "Year": year,
+            "Rating": rating,
+            "Poster": poster,
+            "Notes": "",
+            "ImdbID": "",
+        }
         self.movies[title] = new_movie
 
         try:

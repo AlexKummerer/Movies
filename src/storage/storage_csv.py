@@ -37,6 +37,7 @@ class CsvStorage(IStorage):
         try:
             with open(self.file_path, mode="r") as file:
                 reader = csv.DictReader(file)
+                print(reader)
                 movies = {
                     row["Title"]: {
                         "Title": row["Title"],
@@ -58,12 +59,20 @@ class CsvStorage(IStorage):
     def load_movies_api(self, user_search: str) -> Dict[str, MovieData]:
         api_url = f"https://www.omdbapi.com/?apikey={Config.SECRET_KEY}&t={user_search}"
         response = requests.get(api_url)
+        print(response.status_code)
         if response.status_code == 200:
             movie_data = response.json()
+            print(movie_data)
+            if movie_data["Response"] == "False":
+                logger.error(f"Error: {movie_data['Error']}")
+                raise requests.RequestException(f"Error: {movie_data['Error']}")
+            rating = movie_data["imdbRating"]
+            rating = 0.0 if rating == "N/A" else float(rating)
+
             return {
                 "Title": movie_data["Title"],
                 "Year": movie_data["Year"],
-                "Rating": float(movie_data["imdbRating"]),
+                "Rating": rating,
                 "Poster": movie_data["Poster"],
                 "Notes": "",
                 "ImdbID": movie_data["imdbID"],
@@ -155,7 +164,7 @@ class CsvStorage(IStorage):
                 f'<li class="movie">'
                 f'<a href="https://www.imdb.com/title/{movie["ImdbID"]}" target="_blank">'
                 f'<img src="{movie["Poster"]}" class="movie-poster" alt="{movie["Title"]} Poster"/>'
-                f'</a>'
+                f"</a>"
                 f'<div class="movie-title">{movie["Title"]}</div>'
                 f'<p class="movie-year">{movie["Year"]}</p>'
                 f'<p class="movie-rating">Rating: {movie["Rating"]}</p>'

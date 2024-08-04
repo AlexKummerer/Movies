@@ -8,6 +8,7 @@ class MovieData(TypedDict):
     Rating: float
     Poster: str
     Notes: str
+    ImdbId: str
 
 
 class MovieUtils:
