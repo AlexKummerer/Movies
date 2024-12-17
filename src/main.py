@@ -6,12 +6,12 @@ Raises:
 
 Returns:
     _type_: None
+
 """
 
 import csv
 import sys
 import os
-import logging
 import argparse
 
 
@@ -19,10 +19,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from app.movie_app import MovieApp
 from src.storage.storage_json import JsonStorage
 from src.storage.storage_csv import CsvStorage
-
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 
 def create_empty_file(file_path: str):
@@ -77,7 +73,7 @@ def main() -> None:
     storage_file_path = os.path.join(data_dir, storage_file)
 
     if not os.path.exists(storage_file_path):
-        logger.error("File '%s' does not exist.", storage_file_path)
+        print(f"File '{storage_file_path}' does not exist. Creating a new one...")
         create_empty_file(storage_file_path)
 
     try:
@@ -85,7 +81,7 @@ def main() -> None:
         app = MovieApp(storage)
         app.run()
     except (ValueError, OSError) as e:
-        logger.error("Failed to start the application: %s", e)
+        print(f"Failed to start the application: {e}")
 
 
 if __name__ == "__main__":
